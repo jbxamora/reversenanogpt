@@ -30,9 +30,9 @@ The model starts by converting the input characters into embeddings using a toke
 ### Transformer Blocks
 Each Transformer block consists of two main components:
 
-    1. Multi-head self-attention: This allows the model to weigh the importance of different characters in the input sequence when predicting the next character. The self-attention mechanism computes attention scores (weights) by comparing the query, key, and value vectors. These scores are then used to aggregate the value vectors, resulting in an output that emphasizes the most relevant characters.
+1. Multi-head self-attention: This allows the model to weigh the importance of different characters in the input sequence when predicting the next character. The self-attention mechanism computes attention scores (weights) by comparing the query, key, and value vectors. These scores are then used to aggregate the value vectors, resulting in an output that emphasizes the most relevant characters.
   
-    2. Feedforward layers: Each Transformer block also contains a feedforward sub-layer that consists of two linear layers with a ReLU activation function in between. This sub-layer helps the model learn more complex relationships between the input characters.
+2. Feedforward layers: Each Transformer block also contains a feedforward sub-layer that consists of two linear layers with a ReLU activation function in between. This sub-layer helps the model learn more complex relationships between the input characters.
   
 The output of each Transformer block is then passed to the next block, allowing the model to learn increasingly abstract relationships between the characters.
 
