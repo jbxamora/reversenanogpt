@@ -1,11 +1,12 @@
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 # Hyperparameters
 batch_size = 16 # How many independent sequences will we process in parallel?
 block_size = 32 # What is the maximum context length for predictions?
-max_iters = 5000
+max_iters = 15000
 eval_interval = 100
 learning_rate = 1e-3
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -28,7 +29,7 @@ vocab_size = len(chars)
 # Create a mapping from characters to integers
 stoi = { ch:i for i,ch in enumerate(chars) }
 itos = { i:ch for i,ch in enumerate(chars) }
-encode = lambda s: [stoi[c] for c in s] # encoder: Take a string, output a list of integers
+encode = lambda s: [stoi[c] for c in s] # Encoder: Take a string, output a list of integers
 decode = lambda l: ''.join([itos[i] for i in l]) # Decoder: take a list of integers, output a string
 
 # Train and test splits
@@ -169,7 +170,7 @@ class BigramLanguageModel(nn.Module):
     def generate(self, idx, max_new_tokens):
         # idx is (B, T) array of indices in the current context
         for _ in range(max_new_tokens):
-            # crop idx to the last block_size tokens
+            # Crop idx to the last block_size tokens
             idx_cond = idx[:, -block_size:]
             # Get the predictions
             logits, loss = self(idx_cond)
@@ -190,13 +191,32 @@ print(sum(p.numel() for p in m.parameters())/1e6, 'M parameters')
 
 # Create a PyTorch optimizer
 optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, verbose=True)
+
+# Early stopping settings
+best_val_loss = float('inf')
+patience = 10
+no_improvement = 0
 
 for iter in range(max_iters):
-
-    # Every once in a while evaluate the loss on train and val sets
+    # Every once in a while, evaluate the loss on train and val sets
     if iter % eval_interval == 0 or iter == max_iters - 1:
         losses = estimate_loss()
         print(f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
+
+        # Update the learning rate scheduler
+        scheduler.step(losses['val'])
+
+        # Early stopping
+        if losses['val'] < best_val_loss:
+            best_val_loss = losses['val']
+            no_improvement = 0
+        else:
+            no_improvement += 1
+
+        if no_improvement >= patience:
+            print("Stopping early due to no improvement in validation loss.")
+            break
 
     # Sample a batch of data
     xb, yb = get_batch('train')
@@ -209,10 +229,8 @@ for iter in range(max_iters):
 
 # Generate from the model
 context = torch.zeros((1, 1), dtype=torch.long, device=device)
-generated_text = decode(m.generate(context, max_new_tokens=20000)[0].tolist())
+generated_text = decode(m.generate(context, max_new_tokens=111433)[0].tolist())
 
 # Write the generated text to a file
 with open("output.txt", "w", encoding="utf-8") as f:
     f.write(generated_text)
-
-print(generated_text)

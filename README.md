@@ -60,10 +60,45 @@ generated_text = decode(m.generate(context, max_new_tokens=2000)[0].tolist())
 ```
   Replace `max_new_tokens` with the desired number of characters to generate.
 
+To test different amounts of steps used to train, change the hyperparameters `max_inters`
+
+```python
+# Hyperparameters
+batch_size = 16 
+block_size = 32 
+max_iters = 15000 # I've implemented early stopping for the training loop so test as you see fit.
+eval_interval = 100
+learning_rate = 1e-3
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+eval_iters = 200
+n_embd = 64
+n_head = 4
+n_layer = 4
+dropout = 0.0
+# ------------
+```
+
+**NOTE** The highest iteration reached was:
+```bash
+step 15500: train loss 1.4772, val loss 1.6709
+```
+
+The result is in the output.txt file.
+You can also view the 1000th step iteration in the seperate file.
+
 
 ## Lessons Learned
+  
+### 1. Transformer architecture
+Implementing the Transformer architecture helped gain a deeper understanding of the inner workings of self-attention, multi-head attention, and positional embeddings.
 
-1. **Transformer architecture**: Implementing the Transformer architecture helped gain a deeper understanding of the inner workings of self-attention, multi-head attention, and positional embeddings.
-2. **Character-level language modeling**: Working with a character-based dataset provided insights into the challenges and nuances of predicting the next character in a sequence, as opposed to word-level language modeling.
-3. **Dataset splitting and evaluation**: Splitting the dataset into training and validation sets, and regularly evaluating the model's performance on both sets, helped monitor the model's generalization capabilities and prevent overfitting.
-4. **Text generation**: Implementing the model's text generation functionality provided experience in working with the softmax function, sampling from a probability distribution, and concatenating the generated tokens to create the final output.
+  
+### 2. Character-level language modeling
+ Working with a character-based dataset provided insights into the challenges and nuances of predicting the next character in a sequence, as opposed to word-level language modeling.
+ 
+### 3. Dataset splitting and evaluation
+ Splitting the dataset into training and validation sets, and regularly evaluating the model's performance on both sets, helped monitor the model's generalization capabilities and prevent overfitting.
+
+  
+### 4. Text generation
+Implementing the model's text generation functionality provided experience in working with the softmax function, sampling from a probability distribution, and concatenating the generated tokens to create the final output.
