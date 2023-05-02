@@ -52,7 +52,7 @@ The trained model can be used to generate text by providing a context as input a
 
 ## Usage
 
-To use the model for text generation, provide a context as input, and specify the number of new tokens to generate. The model will return the generated text as output.
+To use the model for text generation, provide a context as input, and specify the number of new tokens to generate. The model will return the generated text as output and into the output.txt for clear visual representation between both texts.
 
 ```python
 context = torch.zeros((1, 1), dtype=torch.long, device=device)
