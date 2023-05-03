@@ -83,8 +83,8 @@ dropout = 0.0
 step 15500: train loss 1.4772, val loss 1.6709
 ```
 
-The result is in the output.txt file.
-You can also view the 1000th step iteration in the seperate file.
+The result is in the [output.txt](output.txt) file.
+You can also view the 1000th step iteration [here](1000steptext.txt)
 
 
 ## Lessons Learned
