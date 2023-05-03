@@ -20,7 +20,8 @@ Here are the key hyperparameters used for training the model:
 - Embedding dimension: 64
 - Dropout rate: 0.0
 
-The model was trained using the AdamW optimizer.
+The model was trained using the [AdamW](https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html)
+ optimizer.
 
 ## Components
 
